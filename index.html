@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLC Intelligence Hub — India Pharma Brand Lifecycle Analytics</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--bg:#0B0E13;--bg2:#12161E;--bg3:#1A1F2B;--bg4:#232A38;--bdr:#272E3E;--bdr2:#353E52;--t1:#EDE9E0;--t2:#9BA3B5;--t3:#5E6678;--acc:#E8A838;--accD:rgba(232,168,56,.13);--teal:#38BFA0;--tealD:rgba(56,191,160,.13);--rose:#E85858;--roseD:rgba(232,88,88,.13);--blue:#5B8DEF;--blueD:rgba(91,141,239,.13);--vio:#A47BE8;--vioD:rgba(164,123,232,.13)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden}
+h1,h2,h3,h4,h5{font-family:'Space Grotesk',sans-serif}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px}
+.amb{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 600px 400px at 12% 8%,rgba(232,168,56,.035) 0%,transparent 70%),radial-gradient(ellipse 500px 500px at 88% 85%,rgba(56,191,160,.025) 0%,transparent 70%)}
+.card{background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;transition:border-color .3s,box-shadow .3s}
+.card:hover{border-color:var(--bdr2);box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.kpi{background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:14px 18px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;border-radius:0 3px 3px 0}
+.kpi.k1::before{background:var(--acc)}.kpi.k2::before{background:var(--teal)}.kpi.k3::before{background:var(--blue)}.kpi.k4::before{background:var(--vio)}.kpi.k5::before{background:var(--rose)}.kpi.k6::before{background:var(--acc)}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:16px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.b-intro{background:var(--blueD);color:var(--blue)}.b-grow{background:var(--tealD);color:var(--teal)}.b-mat{background:var(--accD);color:var(--acc)}.b-dec{background:var(--roseD);color:var(--rose)}
+.sbad{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:7px;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase}
+.s-launch{background:linear-gradient(135deg,rgba(91,141,239,.18),rgba(91,141,239,.04));color:var(--blue);border:1px solid rgba(91,141,239,.22)}
+.s-expand{background:linear-gradient(135deg,rgba(56,191,160,.18),rgba(56,191,160,.04));color:var(--teal);border:1px solid rgba(56,191,160,.22)}
+.s-div{background:linear-gradient(135deg,rgba(164,123,232,.18),rgba(164,123,232,.04));color:var(--vio);border:1px solid rgba(164,123,232,.22)}
+.s-def{background:linear-gradient(135deg,rgba(232,88,88,.18),rgba(232,88,88,.04));color:var(--rose);border:1px solid rgba(232,88,88,.22)}
+.bbtn{padding:8px 14px;border-radius:8px;border:1px solid var(--bdr);background:var(--bg2);color:var(--t2);cursor:pointer;transition:all .2s;font-size:12px;font-weight:500;white-space:nowrap}
+.bbtn:hover{border-color:var(--bdr2);color:var(--t1);background:var(--bg3)}
+.bbtn.on{border-color:var(--acc);color:var(--acc);background:var(--accD);box-shadow:0 0 16px rgba(232,168,56,.08)}
+.fbtn{padding:6px 12px;border-radius:6px;border:1px solid var(--bdr);background:transparent;color:var(--t3);cursor:pointer;transition:all .2s;font-size:11px;font-weight:600}
+.fbtn:hover{color:var(--t2)}.fbtn.on{background:var(--bg3);color:var(--t1);border-color:var(--bdr2)}
+.nba{background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;padding:24px;position:relative;overflow:hidden;transition:all .3s}
+.nba:hover{border-color:var(--bdr2);transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,0,0,.3)}
+.nba .glow{position:absolute;top:-40%;right:-20%;width:180px;height:180px;border-radius:50%;filter:blur(60px);opacity:.12;pointer-events:none}
+.dtbl{width:100%;border-collapse:separate;border-spacing:0}
+.dtbl th{text-align:left;padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);border-bottom:1px solid var(--bdr)}
+.dtbl td{padding:12px 14px;font-size:12px;color:var(--t2);border-bottom:1px solid rgba(39,46,62,.5)}
+.dtbl tr:hover td{background:var(--bg3);color:var(--t1)}
+.dtbl tr.sel td{background:var(--accD);color:var(--t1)}
+.ptk{width:100%;height:5px;background:rgba(39,46,62,.8);border-radius:3px;overflow:hidden}
+.ptk-f{height:100%;border-radius:3px;transition:width .8s ease}
+.pulse{width:7px;height:7px;border-radius:50%;position:relative}
+.pulse::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid currentColor;opacity:.4;animation:pr 2s ease infinite}
+@keyframes pr{0%{transform:scale(.8);opacity:.4}50%{transform:scale(1.5);opacity:0}100%{transform:scale(.8);opacity:0}}
+.fade{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}.fade.v{opacity:1;transform:translateY(0)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--bdr2),transparent);margin:40px 0}
+#toast{position:fixed;bottom:20px;right:20px;z-index:99;display:flex;flex-direction:column;gap:8px}
+.toast{padding:10px 18px;border-radius:8px;font-size:12px;font-weight:500;background:var(--bg3);border:1px solid var(--bdr2);color:var(--t1);animation:tin .3s ease}
+@keyframes tin{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:768px){.kg{grid-template-columns:repeat(2,1fr)!important}.bscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}}
+@media(prefers-reduced-motion:reduce){.fade{transition:none;opacity:1;transform:none}.pulse::after{animation:none}.nba:hover{transform:none}}
+</style>
+</head>
+<body>
+<div class="amb"></div>
+
+<header class="relative z-10 border-b" style="border-color:var(--bdr)">
+<div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between flex-wrap gap-3">
+  <div class="flex items-center gap-3">
+    <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background:var(--accD)"><i class="fas fa-chart-line text-sm" style="color:var(--acc)"></i></div>
+    <div><h1 class="text-base font-bold tracking-tight">PLC Intelligence Hub</h1><p class="text-xs" style="color:var(--t3)">India Pharma Brand Lifecycle &middot; MAT Mar 2022 – Mar 2026</p></div>
+  </div>
+  <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg" style="background:var(--bg3);border:1px solid var(--bdr)"><div class="pulse" style="background:var(--teal);color:var(--teal)"></div><span class="text-xs font-medium" style="color:var(--teal)">38 Brands</span></div>
+    <button id="expBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2" style="background:var(--accD);color:var(--acc);border:1px solid rgba(232,168,56,.2)"><i class="fas fa-table text-xs"></i>Full Table</button>
+  </div>
+</div>
+</header>
+
+<main class="relative z-10 max-w-7xl mx-auto px-5 py-6">
+
+<!-- Filters -->
+<section class="fade mb-5">
+  <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+    <h2 class="text-xs font-bold uppercase tracking-widest" style="color:var(--t3)">Select Brand</h2>
+    <div class="flex gap-1" id="plcFilter" role="tablist" aria-label="PLC stage filter"></div>
+  </div>
+  <div class="bscroll flex gap-2 pb-2" id="brandSel" role="tablist" aria-label="Brand selection"></div>
+</section>
+
+<!-- KPIs -->
+<section class="fade mb-6">
+  <div class="kg grid gap-3" style="grid-template-columns:repeat(6,1fr)" id="kpiGrid"></div>
+</section>
+
+<!-- Charts -->
+<section class="fade grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+  <div class="card p-5 lg:col-span-2">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <div><h3 class="text-sm font-bold">Revenue &amp; Volume Trend</h3><p class="text-xs mt-0.5" style="color:var(--t3)">Annual MAT value (Cr) and volume (K units)</p></div>
+      <div class="flex gap-1 p-0.5 rounded-lg" style="background:var(--bg)"><button class="fbtn on" data-v="both">Both</button><button class="fbtn" data-v="val">Value</button><button class="fbtn" data-v="vol">Volume</button></div>
+    </div>
+    <div style="height:300px;position:relative"><canvas id="trendC"></canvas></div>
+  </div>
+  <div class="card p-5 flex flex-col">
+    <h3 class="text-sm font-bold mb-3">PLC Stage Position</h3>
+    <div id="plcVis" class="text-center mb-3"></div>
+    <div style="height:160px;position:relative"><canvas id="plcC"></canvas></div>
+    <div class="flex justify-between mt-2 px-1"><span class="text-xs" style="color:var(--blue)">Intro</span><span class="text-xs" style="color:var(--teal)">Growth</span><span class="text-xs" style="color:var(--acc)">Maturity</span><span class="text-xs" style="color:var(--rose)">Decline</span></div>
+    <div id="plcCrit" class="mt-3 text-xs space-y-1.5" style="color:var(--t3)"></div>
+  </div>
+</section>
+
+<!-- YoY + Price -->
+<section class="fade grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+  <div class="card p-5"><h3 class="text-sm font-bold mb-4">Year-over-Year Growth Rates (%)</h3><div style="height:230px;position:relative"><canvas id="yoyC"></canvas></div></div>
+  <div class="card p-5"><h3 class="text-sm font-bold mb-4">Price Realization Trajectory (INR/unit)</h3><div style="height:230px;position:relative"><canvas id="priceC"></canvas></div></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- NBA -->
+<section class="fade mb-6">
+  <div class="mb-5"><h2 class="text-lg font-bold">Next Best Action (NBA) Strategy</h2><p class="text-xs mt-1" style="color:var(--t3)">Evidence-backed commercial playbook derived from PLC stage, growth trajectory, and competitive dynamics</p></div>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-5" id="nbaBox"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Comparison Table -->
+<section class="fade mb-6">
+  <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+    <div><h3 class="text-base font-bold">Cross-Brand PLC Comparison</h3><p class="text-xs mt-1" style="color:var(--t3)">All 38 brands — click any row to inspect</p></div>
+  </div>
+  <div class="card overflow-hidden"><div class="overflow-x-auto" style="max-height:520px;overflow-y:auto"><table class="dtbl" id="compTbl"></table></div></div>
+</section>
+
+<!-- Radar -->
+<section class="fade mb-6">
+  <div class="card p-5"><h3 class="text-sm font-bold mb-2 text-center">Multi-Dimensional Brand Health Score</h3><p class="text-xs text-center mb-4" style="color:var(--t3)">Normalized 0–100 scale across 6 KPI dimensions</p><div style="height:320px;position:relative;max-width:480px;margin:0 auto"><canvas id="radC"></canvas></div></div>
+</section>
+
+</main>
+
+<footer class="relative z-10 border-t py-6 px-5" style="border-color:var(--bdr)">
+<div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-2">
+  <p class="text-xs" style="color:var(--t3)">PLC Intelligence Hub &middot; Proprietary Analytics &middot; Data: AIOCD AWACS MAT Mar 2026</p>
+  <p class="text-xs" style="color:var(--t3)">Methodology: Empirical PLC via CAGR, growth deceleration ratio, and value-volume gap</p>
+</div>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+// ===== DATASET: 38 brands from provided India pharma data =====
+const Y=['Mar 22','Mar 23','Mar 24','Mar 25','Mar 26'];
+const D=[
+// GROWTH (12)
+{id:'aug',n:'AUGMENTIN',mol:'Amoxycillin + Clavulanic Acid',co:'GSK',ta:'Anti-Infectives',plc:2,v:[389.68,423.10,447.03,466.20,542.07],u:[27079,28067,31237,31861,36592],p:148.14},
+{id:'duo',n:'DUOLIN',mol:'Levosalbutamol + Ipratropium',co:'CIPLA',ta:'Respiratory',plc:2,v:[241.06,299.12,325.59,340.54,410.47],u:[175199,199272,195938,191206,210922],p:19.46},
+{id:'cil',n:'CILACAR',mol:'Cilnidipine',co:'Torrent',ta:'Cardiovascular',plc:2,v:[224.31,263.21,286.99,318.52,385.87],u:[19974,21077,20914,21109,23077],p:167.21},
+{id:'bri',n:'BRILINTA',mol:'Ticagrelor',co:'AstraZeneca',ta:'Blood',plc:2,v:[161.34,196.35,255.76,280.97,366.35],u:[5249,5923,7118,7195,8678],p:422.14},
+{id:'zrp',n:'ZERODOL P',mol:'Aceclofenac + Paracetamol',co:'IPCA',ta:'Musculo-Skeletal',plc:2,v:[276.18,283.91,281.98,294.99,353.04],u:[67781,63724,61770,55658,62998],p:56.04},
+{id:'lan',n:'LANTUS',mol:'Glargine Insulin',co:'Sanofi India',ta:'Diabetes',plc:2,v:[449.44,371.70,322.81,297.16,343.70],u:[7598,5852,6172,5796,6645],p:517.22},
+{id:'tam',n:'TELMA AM',mol:'Telmisartan + Amlodipine',co:'Glenmark',ta:'Cardiovascular',plc:2,v:[88.10,132.36,212.33,266.15,321.01],u:[5260,6960,10337,12118,13469],p:238.33},
+{id:'lip',n:'LIPAGLYN',mol:'Saroglitazar',co:'Zydus',ta:'Cardiovascular',plc:2,v:[93.93,119.34,160.80,220.83,295.95],u:[3601,4154,5239,6820,8381],p:353.14},
+{id:'neu',n:'NEUROBION FORTE',mol:'Vit B Complex + C',co:'P&G Health',ta:'Vitamins',plc:2,v:[178.45,218.14,206.14,241.58,288.35],u:[71575,80828,70475,74417,80616],p:35.77},
+{id:'thh',n:'TELMA H',mol:'Telmisartan + HCTZ',co:'Glenmark',ta:'Cardiovascular',plc:2,v:[138.24,158.82,202.42,232.68,272.37],u:[7303,8210,9540,10093,10557],p:258.01},
+{id:'alb',n:'ALBUREL',mol:'Albumin 20%',co:'Reliance',ta:'Hospital Solutions',plc:2,v:[130.94,118.83,173.14,182.32,242.32],u:[275,255,282,300,334],p:7247.6},
+{id:'opd',n:'OPDYTA',mol:'Nivolumab',co:'BMS',ta:'Oncology',plc:2,v:[58.65,105.68,119.35,160.97,198.53],u:[7.18,12.94,14.61,19.7,22.42],p:88549},
+// INTRODUCTION (6)
+{id:'mtk',n:'MONTEK-LC',mol:'Montelukast + Levocetirizine',co:'Sun Pharma',ta:'Respiratory',plc:1,v:[0,0,91.95,227.93,292.10],u:[0,0,3786,9141,10590],p:275.83},
+{id:'lev',n:'LEVIPIL',mol:'Levetiracetam',co:'Sun Pharma',ta:'CNS',plc:1,v:[0,151.31,242.77,250.60,288.24],u:[0,10972,16119,16207,18396],p:156.69},
+{id:'pts',n:'PANTOP D SR',mol:'Pantoprazole + Domperidone',co:'Aristo',ta:'GI',plc:1,v:[0,0,145.56,237.10,271.61],u:[0,0,9704,15535,16431],p:165.3},
+{id:'cef',n:'CEFTUM',mol:'Cefuroxime',co:'GSK',ta:'Anti-Infectives',plc:1,v:[0,0,0,7.55,215.93],u:[0,0,0,183,5167],p:417.92},
+{id:'upr',n:'UPRISE D3',mol:'Cholecalciferol 60K IU',co:'Alkem',ta:'Vitamins',plc:1,v:[0,0,92.27,182.94,202.17],u:[0,0,3123,6191,6743],p:299.82},
+{id:'mou',n:'MOUNJARO',mol:'Tirzepatide',co:'Eli Lilly',ta:'Diabetes / Obesity',plc:1,v:[0,0,0,0,161.29],u:[0,0,0,0,492],p:3281.25},
+// MATURITY (10)
+{id:'zrs',n:'ZERODOL SP',mol:'Aceclofenac + Paracetamol + Serratiopeptidase',co:'IPCA',ta:'Musculo-Skeletal',plc:3,v:[439.68,519.48,592.62,633.42,716.28],u:[59304,64337,66332,65598,69540],p:103},
+{id:'pad',n:'PAN D',mol:'Pantoprazole + Domperidone',co:'Alkem',ta:'GI',plc:3,v:[422.01,519.60,566.29,648.95,697.33],u:[31096,36824,37752,39620,38766],p:179.88},
+{id:'mon',n:'MONOCEF',mol:'Ceftriaxone',co:'Aristo',ta:'Anti-Infectives',plc:3,v:[463.82,397.19,469.85,530.83,556.35],u:[107386,86411,96429,106379,110012],p:50.57},
+{id:'udi',n:'UDILIV',mol:'Ursodeoxycholic Acid',co:'Abbott',ta:'GI / Hepatobiliary',plc:3,v:[344.39,363.57,430.58,482.48,504.33],u:[7063,6747,7294,7369,7059],p:714.45},
+{id:'man',n:'MANFORCE',mol:'Sildenafil',co:'Mankind',ta:'Genito-Urinary',plc:3,v:[212.45,287.15,322.41,385.49,390.73],u:[12713,15765,17701,21165,21139],p:184.83},
+{id:'gly',n:'GLYCOMET GP',mol:'Glimepiride + Metformin',co:'USV',ta:'Diabetes',plc:3,v:[238.05,263.97,282.51,298.10,330.93],u:[20940,21483,22158,23246,24172],p:136.91},
+{id:'bud',n:'BUDECORT',mol:'Budesonide Respules',co:'CIPLA',ta:'Respiratory',plc:3,v:[249.71,362.89,385.23,383.16,425.01],u:[146619,196455,202969,201240,221247],p:19.21},
+{id:'prg',n:'PREGA NEWS',mol:'Pregnancy Test Kit',co:'Mankind',ta:'Diagnostics',plc:3,v:[124.46,166.50,186.33,242.87,279.29],u:[33383,41061,43474,56665,65282],p:42.78},
+{id:'shc',n:'SHELCAL',mol:'Calcium + Cholecalciferol',co:'Torrent',ta:'Vitamins',plc:3,v:[271.40,271.82,294.34,291.95,292.72],u:[35276,31864,30912,27906,25443],p:115.05},
+{id:'dup',n:'DUPHASTON',mol:'Dydrogesterone',co:'Abbott',ta:'Genito-Urinary',plc:3,v:[307.63,277.79,266.58,274.19,278.41],u:[5817,5155,4615,4298,4052],p:687.11},
+// DECLINE (10)
+{id:'ele',n:'ELECTRAL',mol:'Oral Electrolytes',co:'FDC',ta:'GI',plc:4,v:[226.62,248.75,310.02,377.73,341.87],u:[150085,152588,169167,213442,195663],p:17.47},
+{id:'dol',n:'DOLO 650',mol:'Paracetamol',co:'Micro Labs',ta:'CNS / Analgesic',plc:4,v:[473.95,327.20,315.62,303.96,280.21],u:[214781,141999,133791,126205,115001],p:24.37},
+{id:'bec',n:'BECOSULES',mol:'Vitamin B Complex + C',co:'Pfizer',ta:'Vitamins',plc:4,v:[276.78,259.40,276.83,278.20,263.83],u:[81729,71308,69797,64072,55118],p:47.87},
+{id:'evi',n:'EVION',mol:'Vitamin E',co:'P&G Health',ta:'Vitamins',plc:4,v:[18.85,41.56,206.41,268.29,241.16],u:[4036,8129,36819,43819,35975],p:67.04},
+{id:'mix',n:'MIXTARD HM Penfill',mol:'Human Premix Insulin',co:'Abbott*',ta:'Diabetes',plc:4,v:[215.15,250.88,233.74,213.28,197.49],u:[8017,8664,7570,6497,5814],p:339.67},
+{id:'azi',n:'AZITHRAL',mol:'Azithromycin',co:'Alembic',ta:'Anti-Infectives',plc:4,v:[261.56,214.13,227.73,227.79,189.95],u:[30641,23552,24396,24164,19861],p:95.64},
+{id:'ran',n:'RANTAC',mol:'Ranitidine',co:'Torrent',ta:'GI',plc:4,v:[210.19,167.85,220.42,212.45,177.60],u:[119892,80945,70487,61473,46788],p:37.96},
+{id:'cor',n:'COREX DX',mol:'Chlorpheniramine + Dextromethorphan',co:'CIPLA',ta:'Respiratory',plc:4,v:[156.75,171.22,207.18,205.11,190.09],u:[18529,18246,20006,18923,15948],p:119.2},
+{id:'sar',n:'SARIDON',mol:'Paracetamol + Caffeine + Phenazone',co:'Bayer',ta:'Musculo-Skeletal',plc:4,v:[124.12,150.43,183.45,192.64,172.44],u:[45350,50082,55675,54876,45290],p:38.07},
+{id:'mef',n:'MEFTAL SPAS',mol:'Dicyclomine + Mefenamic Acid',co:'Blue Cross',ta:'GI',plc:4,v:[160.48,183.48,174.82,189.57,178.59],u:[48836,51812,48954,51640,46909],p:38.07}
+];
+
+// ===== COMPUTED KPIs =====
+function calcKPIs(d){
+  const vals=d.v, vols=d.u;
+  // Find first non-zero for CAGR
+  let si=0; for(let i=0;i<5;i++){if(vals[i]>0){si=i;break;}}
+  const nYrs=4-si;
+  const cagr=nYrs>0&&vals[si]>0? (Math.pow(vals[4]/vals[si],1/nYrs)-1)*100 : null;
+  // YoY value
+  const yoyV=[]; for(let i=1;i<5;i++){if(vals[i-1]>0) yoyV.push(+((vals[i]-vals[i-1])/vals[i-1]*100).toFixed(2)); else yoyV.push(null);}
+  // YoY volume
+  const yoyU=[]; for(let i=1;i<5;i++){if(vols[i-1]>0) yoyU.push(+((vols[i]-vols[i-1])/vols[i-1]*100).toFixed(2)); else yoyU.push(null);}
+  // Growth deceleration (last 2 valid yoyV)
+  let decel=null;
+  const validYoy=yoyV.filter(x=>x!==null);
+  if(validYoy.length>=2){const a=validYoy[validYoy.length-2],b=validYoy[validYoy.length-1]; if(a>0) decel=+(b/a).toFixed(3);}
+  // Value-volume gap (latest)
+  const lastV=yoyV.findLast(x=>x!==null)||0, lastU=yoyU.findLast(x=>x!==null)||0;
+  const vvGap=+(lastV-lastU).toFixed(2);
+  // Cumulative revenue
+  const cumRev=vals.reduce((a,b)=>a+b,0);
+  // Peak
+  const peakVal=Math.max(...vals);
+  const peakYr=Y[vals.indexOf(peakVal)];
+  // Price trend (computed from data)
+  const prices=vals.map((v,i)=>vols[i]>0?+(v*100/vols[i]).toFixed(2):null);
+  return {cagr,yoyV,yoyU,decel,vvGap,cumRev,peakVal,peakYr,prices};
+}
+
+// Precompute all KPIs
+D.forEach(d=>{const k=calcKPIs(d);Object.assign(d,k);});
+
+// ===== PLC HELPERS =====
+const PLC_NAMES={1:'Introduction',2:'Growth',3:'Maturity',4:'Decline'};
+const PLC_COLORS={1:'#5B8DEF',2:'#38BFA0',3:'#E8A838',4:'#E85858'};
+const PLC_BADGE={1:'b-intro',2:'b-grow',3:'b-mat',4:'b-dec'};
+const PLC_NBA={1:'New Product Launch',2:'Market Expansion',3:'Line Diversification',4:'Post-Cliff Defence'};
+const PLC_SBAD={1:'s-launch',2:'s-expand',3:'s-div',4:'s-def'};
+
+// ===== STATE =====
+let selId='aug', filterPlc=0, chartView='both';
+let trendChart,yoyChart,priceChart,radarChart;
+
+// ===== TOAST =====
+function toast(msg){
+  const c=document.getElementById('toast');
+  const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  c.appendChild(t);setTimeout(()=>t.remove(),2500);
+}
+
+// ===== BUILD FILTER BUTTONS =====
+function buildFilters(){
+  const box=document.getElementById('plcFilter');
+  const opts=[{l:'All',v:0},{l:'Intro',v:1},{l:'Growth',v:2},{l:'Maturity',v:3},{l:'Decline',v:4}];
+  opts.forEach(o=>{
+    const b=document.createElement('button');b.className='fbtn'+(o.v===0?' on':'');
+    b.textContent=o.l;b.setAttribute('aria-label','Filter: '+o.l);
+    b.onclick=()=>{filterPlc=o.v;box.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');buildBrandBtns();};
+    box.appendChild(b);
+  });
+}
+
+// ===== BUILD BRAND BUTTONS =====
+function buildBrandBtns(){
+  const box=document.getElementById('brandSel');box.innerHTML='';
+  const list=filterPlc?D.filter(d=>d.plc===filterPlc):D;
+  list.forEach(d=>{
+    const b=document.createElement('button');b.className='bbtn'+(d.id===selId?' on':'');
+    b.innerHTML=`<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${PLC_COLORS[d.plc]};margin-right:4px"></span>${d.n}`;
+    b.setAttribute('aria-label',d.n+' — '+PLC_NAMES[d.plc]);
+    b.onclick=()=>{selId=d.id;box.querySelectorAll('.bbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');updateAll();};
+    box.appendChild(b);
+  });
+}
+
+// ===== FORMAT =====
+function fmt(v,dec=1){if(v===null||v===undefined)return '—';return Number(v).toLocaleString('en-IN',{maximumFractionDigits:dec});}
+function fmtSign(v,dec=1){if(v===null||v===undefined)return '—';return (v>=0?'+':'')+fmt(v,dec);}
+
+// ===== KPI GRID =====
+function renderKPIs(d){
+  const g=document.getElementById('kpiGrid');
+  const items=[
+    {label:'MAT Mar 26 Revenue',val:d.v[4].toFixed(1)+' Cr',cls:'k1',icon:'fa-indian-rupee-sign'},
+    {label:'4-Year CAGR',val:d.cagr!==null?fmtSign(d.cagr)+'%':'New Launch',cls:'k2',icon:'fa-arrow-trend-up'},
+    {label:'Latest YoY Value',val:d.yoyV[3]!==null?fmtSign(d.yoyV[3])+'%':'—',cls:'k3',icon:'fa-chart-bar'},
+    {label:'Latest YoY Volume',val:d.yoyU[3]!==null?fmtSign(d.yoyU[3])+'%':'—',cls:'k4',icon:'fa-boxes-stacked'},
+    {label:'Price / Unit',val:'₹'+fmt(d.p),cls:'k5',icon:'fa-tag'},
+    {label:'Growth Decel. Ratio',val:d.decel!==null?d.decel.toFixed(2):'—',cls:'k6',icon:'fa-gauge-high'}
+  ];
+  g.innerHTML=items.map(it=>`
+    <div class="kpi ${it.cls}">
+      <div class="flex items-center gap-2 mb-1"><i class="fas ${it.icon} text-xs" style="color:var(--t3)"></i><span class="text-xs" style="color:var(--t3)">${it.label}</span></div>
+      <div class="text-lg font-bold" style="color:var(--t1)">${it.val}</div>
+    </div>`).join('');
+}
+
+// ===== PLC VISUAL =====
+function renderPLC(d){
+  const vis=document.getElementById('plcVis');
+  const crit=document.getElementById('plcCrit');
+  const c=PLC_COLORS[d.plc],nm=PLC_NAMES[d.plc];
+  vis.innerHTML=`<span class="badge ${PLC_BADGE[d.plc]}" style="font-size:14px;padding:6px 16px"><i class="fas fa-circle text-xs"></i>${nm}</span>
+    <div class="text-xs mt-2" style="color:var(--t3)">${d.n} — ${d.mol}</div>`;
+  // Criteria
+  const lines=[];
+  if(d.cagr!==null)lines.push(`CAGR: ${fmtSign(d.cagr)}%`);
+  if(d.yoyV[3]!==null)lines.push(`YoY Value: ${fmtSign(d.yoyV[3])}%`);
+  if(d.yoyU[3]!==null)lines.push(`YoY Volume: ${fmtSign(d.yoyU[3])}%`);
+  if(d.decel!==null)lines.push(`Decel Ratio: ${d.decel} ${d.decel>1?'(Accelerating)':'(Decelerating)'}`);
+  lines.push(`V-V Gap: ${fmtSign(d.vvGap)} pp`);
+  crit.innerHTML=lines.map(l=>`<div class="flex items-center gap-2"><span style="width:4px;height:4px;border-radius:50%;background:${c};flex-shrink:0"></span>${l}</div>`).join('');
+  // Draw PLC curve
+  drawPLCCurve(d);
+}
+
+// ===== PLC S-CURVE CANVAS =====
+function drawPLCCurve(d){
+  const cv=document.getElementById('plcC'),ctx=cv.getContext('2d');
+  const W=cv.clientWidth,H=cv.clientHeight;cv.width=W*2;cv.height=H*2;ctx.scale(2,2);
+  ctx.clearRect(0,0,W,H);
+  // S-curve path
+  const pts=[];
+  for(let t=0;t<=1;t+=0.01){
+    const x=20+t*(W-40);
+    const y=H-15-((1/(1+Math.exp(-10*(t-0.5))))*(H-30));
+    pts.push({x,y});
+  }
+  // Stage regions
+  const regions=[
+    {s:0,e:0.25,c:'rgba(91,141,239,0.06)'},{s:0.25,e:0.5,c:'rgba(56,191,160,0.06)'},
+    {s:0.5,e:0.75,c:'rgba(232,168,56,0.06)'},{s:0.75,e:1,c:'rgba(232,88,88,0.06)'}
+  ];
+  regions.forEach(r=>{
+    const i1=Math.round(r.s*100),i2=Math.round(r.e*100);
+    ctx.beginPath();ctx.moveTo(pts[i1].x,H-15);
+    for(let i=i1;i<=i2;i++)ctx.lineTo(pts[i].x,pts[i].y);
+    ctx.lineTo(pts[i2].x,H-15);ctx.closePath();ctx.fillStyle=r.c;ctx.fill();
+  });
+  // Curve line
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+  for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i].x,pts[i].y);
+  ctx.strokeStyle='rgba(240,237,230,0.15)';ctx.lineWidth=1.5;ctx.stroke();
+  // Brand position
+  let pos=0;
+  if(d.plc===1)pos=0.05+d.cagr!==null?Math.min(d.cagr/50,0.2):0.1;
+  else if(d.plc===2)pos=0.25+Math.min((d.cagr||20)/40,0.24);
+  else if(d.plc===3)pos=0.5+Math.min(Math.max((d.yoyV[3]||5)/15,0),0.24);
+  else pos=0.75+Math.min(Math.max(0.05,0.25+((d.yoyV[3]||-10)+20)/40),0.24);
+  pos=Math.max(0.03,Math.min(0.97,pos));
+  const pi=Math.round(pos*100);
+  const px=pts[pi].x,py=pts[pi].y;
+  // Glow
+  const grd=ctx.createRadialGradient(px,py,0,px,py,18);
+  grd.addColorStop(0,PLC_COLORS[d.plc]+'55');grd.addColorStop(1,PLC_COLORS[d.plc]+'00');
+  ctx.fillStyle=grd;ctx.fillRect(px-18,py-18,36,36);
+  // Dot
+  ctx.beginPath();ctx.arc(px,py,5,0,Math.PI*2);ctx.fillStyle=PLC_COLORS[d.plc];ctx.fill();
+  ctx.strokeStyle='#0B0E13';ctx.lineWidth=2;ctx.stroke();
+  // Label
+  ctx.fillStyle=PLC_COLORS[d.plc];ctx.font='bold 9px "DM Sans"';ctx.textAlign='center';
+  ctx.fillText(d.n,px,py-12);
+}
+
+// ===== CHARTS =====
+const chartFont={family:'"DM Sans",sans-serif'};
+Chart.defaults.color='#9BA3B5';Chart.defaults.font.family=chartFont.family;Chart.defaults.font.size=11;
+
+function updateTrendChart(d){
+  const ctx=document.getElementById('trendC');
+  if(trendChart)trendChart.destroy();
+  const showVal=chartView==='both'||chartView==='val';
+  const showVol=chartView==='both'||chartView==='vol';
+  const ds=[];
+  if(showVal)ds.push({label:'Revenue (Cr)',data:d.v,borderColor:PLC_COLORS[d.plc],backgroundColor:PLC_COLORS[d.plc]+'22',borderWidth:2.5,pointRadius:4,pointBackgroundColor:PLC_COLORS[d.plc],tension:.3,yAxisID:'y'});
+  if(showVol)ds.push({label:'Volume (K units)',data:d.u,borderColor:'#9BA3B5',backgroundColor:'rgba(155,163,181,0.1)',borderWidth:1.5,pointRadius:3,pointBackgroundColor:'#9BA3B5',borderDash:[5,3],tension:.3,yAxisID:showVal?'y1':'y'});
+  trendChart=new Chart(ctx,{type:'line',data:{labels:Y,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:showVal&&showVol,labels:{boxWidth:12,padding:12}},tooltip:{backgroundColor:'#1A1F2B',borderColor:'#353E52',borderWidth:1,titleFont:{weight:'600'},padding:10,
+        callbacks:{label:function(c){return c.dataset.label+': '+fmt(c.parsed.y,1);}}}},
+      scales:{x:{grid:{color:'rgba(39,46,62,0.5)'},ticks:{font:{size:10}}},
+        y:{position:'left',grid:{color:'rgba(39,46,62,0.4)'},ticks:{callback:v=>fmt(v,0)},title:{display:true,text:showVal&&!showVol?'Revenue (Cr)':'Revenue (Cr)',font:{size:10}}},
+        ...(showVol?{y1:{position:'right',grid:{drawOnChartArea:false},ticks:{callback:v=>fmt(v,0)},title:{display:true,text:'Volume (K units)',font:{size:10}}}}:{})}}});
+}
+
+function updateYoYChart(d){
+  const ctx=document.getElementById('yoyC');
+  if(yoyChart)yoyChart.destroy();
+  const labels=Y.slice(1);
+  yoyChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[
+    {label:'Value YoY %',data:d.yoyV,backgroundColor:d.yoyV.map(v=>v!==null?(v>=0?'rgba(232,168,56,0.7)':'rgba(232,88,88,0.7)'):'rgba(94,102,120,0.3)'),borderRadius:4,barPercentage:0.35},
+    {label:'Volume YoY %',data:d.yoyU,backgroundColor:d.yoyU.map(v=>v!==null?(v>=0?'rgba(56,191,160,0.6)':'rgba(232,88,88,0.5)'):'rgba(94,102,120,0.2)'),borderRadius:4,barPercentage:0.35}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{boxWidth:10,padding:10}},tooltip:{backgroundColor:'#1A1F2B',borderColor:'#353E52',borderWidth:1,callbacks:{label:c=>c.dataset.label+': '+fmtSign(c.parsed.y)+'%'}}},
+    scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(39,46,62,0.4)'},ticks:{callback:v=>v+'%'}}}}});
+}
+
+function updatePriceChart(d){
+  const ctx=document.getElementById('priceC');
+  if(priceChart)priceChart.destroy();
+  priceChart=new Chart(ctx,{type:'line',data:{labels:Y,datasets:[{label:'Realized Price (INR)',data:d.prices,borderColor:'#A47BE8',backgroundColor:'rgba(164,123,232,0.1)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#A47BE8',tension:.3,fill:true}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1A1F2B',borderColor:'#353E52',borderWidth:1,callbacks:{label:c=>'₹'+fmt(c.parsed.y,2)}}},
+      scales:{x:{grid:{color:'rgba(39,46,62,0.4)'}},y:{grid:{color:'rgba(39,46,62,0.3)'},ticks:{callback:v=>'₹'+fmt(v,0)}}}}});
+}
+
+function updateRadar(d){
+  const ctx=document.getElementById('radC');
+  if(radarChart)radarChart.destroy();
+  // Normalize 6 dimensions to 0-100
+  const dims=[];
+  // 1. Revenue Scale (log)
+  dims.push(Math.min(100,Math.max(0,Math.log10(d.v[4]+1)/Math.log10(750)*100)));
+  // 2. Growth Momentum (CAGR mapped: -20->0, 40->100)
+  dims.push(Math.min(100,Math.max(0,((d.cagr||0)+20)/60*100)));
+  // 3. Volume Growth
+  dims.push(Math.min(100,Math.max(0,((d.yoyU[3]||0)+20)/60*100)));
+  // 4. Price Strength (relative to median ~150)
+  dims.push(Math.min(100,Math.max(0,Math.log10(d.p+1)/Math.log10(90000)*100)));
+  // 5. Growth Sustainability (inverse decel: decel=1->80, decel=0.5->40, decel=1.5->95)
+  dims.push(d.decel!==null?Math.min(100,Math.max(0,d.decel*65)):50);
+  // 6. Value-Volume Efficiency (positive gap = price-driven = good for maturity)
+  dims.push(Math.min(100,Math.max(0,50+d.vvGap*2)));
+  radarChart=new Chart(ctx,{type:'radar',data:{labels:['Revenue Scale','Growth Momentum','Volume Growth','Price Strength','Sustainability','V-V Efficiency'],
+    datasets:[{label:d.n,data:dims,borderColor:PLC_COLORS[d.plc],backgroundColor:PLC_COLORS[d.plc]+'22',borderWidth:2,pointRadius:3,pointBackgroundColor:PLC_COLORS[d.plc]}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{r:{beginAtZero:true,max:100,ticks:{display:false,stepSize:25},grid:{color:'rgba(39,46,62,0.5)'},pointLabels:{font:{size:10,family:'"DM Sans"'},color:'#9BA3B5'},angleLines:{color:'rgba(39,46,62,0.4)'}}}}});
+}
+
+// ===== NBA STRATEGY =====
+const NBA_DATA={
+  1:{title:'New Product Launch',sbad:'s-launch',icon:'fa-rocket',
+    cards:[
+      {title:'Accelerate HCP Onboarding',evidence:b=>`Brand launched ${b.v[0]===0&&b.v[1]===0?'in Mar 2024':b.v[0]===0?'in Mar 2023':'recently'} with ${fmt(b.v[4],1)} Cr MAT. Rapid prescriber adoption is the critical lever.`,
+        actions:['Deploy dedicated launch specialists in Tier-1 & Tier-2 metros','Execute 90-day rapid-cycle KOL engagement with CME programs','Build digital HCP education hub with MOOC-style modules','Target 500+ high-prescribing physicians within 6 months'],impact:'+40-60% Rx uptake in Q1 post-launch'},
+      {title:'Payer Tier-2 Access & Formulary',evidence:b=>`Realized price ₹${fmt(b.p)}/unit positions ${b.n} ${b.p>500?'as premium specialty':'in mid-market tier'}. Access expansion unlocks volume ceiling.`,
+        actions:['Negotiate Tier-2 hospital formulary listings with volume commitments','Secure state government tender inclusion for chronic indications','Launch patient affordability cards for out-of-pocket segments','Partner with 3P platforms for digital Rx fulfillment'],impact:'+25% addressable patient pool'},
+      {title:'Digital Patient Adherence',evidence:b=>`${b.n} addresses ${b.ta.toLowerCase()}. Digital adherence programs can reduce discontinuation by 30-40% in Year 1.`,
+        actions:['Deploy SMS/WhatsApp reminder ecosystem with dose tracking','Integrate with ABDM health ID for longitudinal records','Build patient community forums for peer support','Gamify therapy milestones with reward points'],impact:'15-20% improvement in persistence rates'}
+    ]},
+  2:{title:'Market Expansion',sbad:'s-expand',icon:'fa-expand',
+    cards:[
+      {title:'Specialist Field-Force Expansion',evidence:b=>`CAGR of ${fmtSign(b.cagr)}% with ${fmtSign(b.yoyV[3])}% latest YoY value growth signals strong demand elasticity. Field-force coverage gaps exist in Tier-2/3.`,
+        actions:['Expand MR coverage from current metros to 200+ Tier-2/3 towns','Hire therapy-specialist reps for targeted HCP segments','Implement geo-mapped call planning with real-time CRM','Launch evening-round clinics for working physicians'],impact:'+20-30% incremental revenue from underserved geographies'},
+      {title:'Head-to-Head RWE Generation',evidence:b=>`At ₹${fmt(b.p)}/unit and ${fmt(b.v[4],1)} Cr revenue, ${b.n} competes with established players in ${b.ta}. RWE shifts prescriber preference.`,
+        actions:['Commission 500+ patient retrospective chart reviews','Publish head-to-head efficacy data in peer-reviewed journals','Present RWE at 10+ national/regional conferences','Create digital detail aids with local real-world outcomes'],impact:'+10-15% prescriber switch rate within 12 months'},
+      {title:'Indication Diversification',evidence:b=>`Volume growth of ${fmtSign(b.yoyU[3])}% indicates expanding patient base. New indications multiply total addressable market.`,
+        actions:['File supplemental indication dossiers with CDSCO','Conduct Phase IV post-marketing studies in adjacent indications','Engage KOLs to develop off-label evidence protocols','Create indication-specific patient pathways'],impact:'+35-50% TAM expansion over 3 years'}
+    ]},
+  3:{title:'Line Diversification',sbad:'s-div',icon:'fa-code-branch',
+    cards:[
+      {title:'FDC Line Extension Switch',evidence:b=>`Value growth ${fmtSign(b.yoyV[3])}% vs volume ${fmtSign(b.yoyU[3])}% reveals ${b.vvGap>0?'price-driven':'volume-stalled'} dynamics. FDC extensions create new revenue streams without cannibalization.`,
+        actions:['Launch FDC variant with complementary molecule (e.g., +Serratiopeptidase)','Develop SR/ER formulation for twice-daily to once-daily switch','Introduce dose-strength optimization for geriatric/pediatric segments','Create combo-packs for acute+chronic overlap patients'],impact:'+12-18% revenue from line extensions in 18 months'},
+      {title:'Value-Based Contracting',evidence:b=>`${b.n} at ${fmt(b.v[4],1)} Cr with ${b.yoyU[3]<0?fmtSign(b.yoyU[3]):'flat'} volume trend requires margin defense through institutional contracts.`,
+        actions:['Negotiate volume-based rebate agreements with top 20 hospital chains','Implement outcome-linked pricing for chronic therapy segments','Deploy tender intelligence platform for real-time bid optimization','Structure annual rate contracts with government institutions'],impact:'+3-5% margin improvement on institutional business'},
+      {title:'Margin Optimization & SKU Rationalization',evidence:b=>`Realized price ₹${fmt(b.p)}/unit with cumulative revenue of ${fmt(b.cumRev,0)} Cr. Portfolio complexity erodes margin efficiency.`,
+        actions:['Rationalize low-volume SKUs (<1% revenue contribution)','Negotiate raw material cost reductions with API suppliers','Optimize pack sizes to reduce per-unit packaging cost','Implement trade margin restructuring for channel efficiency'],impact:'+2-4% EBITDA margin expansion'}
+    ]},
+  4:{title:'Post-Cliff Defence',sbad:'s-def',icon:'fa-shield-halved',
+    cards:[
+      {title:'Divest Manufacturing to CMO',evidence:b=>`${b.n} revenue declined from peak ${fmt(b.peakVal,1)} Cr (${b.peakYr}) to ${fmt(b.v[4],1)} Cr — a ${fmt(((b.v[4]-b.peakVal)/b.peakVal*100),1)}% erosion. Cost restructuring is imperative.`,
+        actions:['Transfer manufacturing to low-cost CMO partners','Retain only QC/QA and regulatory oversight in-house','Negotiate 3-year fixed-price supply agreements','Monetize surplus manufacturing capacity'],impact:'30-40% COGS reduction'},
+      {title:'Lean Institutional Supply Pivot',evidence:b=>`Volume erosion of ${fmtSign(d=>d.yoyU[3])}% with institutional/government segment growing. Pivot to tender-based supply extends brand life.`,
+        actions:['Aggressively bid for state government hospital tenders','Establish dedicated institutional sales team for govt channels','Simplify packaging for bulk institutional supply','Partner with GPOs for volume commitments'],impact:'Stabilize revenue at 60-70% of peak'},
+      {title:'Premium OTC Repositioning',evidence:b=>`${b.n} has ${fmt(b.u[4]/1000,1)}L unit base. Converting prescription brand to OTC unlocks consumer demand.`,
+        actions:['Apply for Schedule OTC reclassification with CDSCO','Build DTC digital marketing campaigns on health platforms','Secure pharmacy shelf visibility with trade promotions','Launch consumer-friendly packaging with self-care messaging'],impact:'+15-25% revenue recovery via OTC channel within 2 years'}
+    ]}
+};
+
+function renderNBA(d){
+  const box=document.getElementById('nbaBox');
+  const nba=NBA_DATA[d.plc];
+  box.innerHTML=`<div class="lg:col-span-2 mb-2 flex items-center gap-3">
+    <span class="sbad ${nba.sbad}"><i class="fas ${nba.icon}"></i>${nba.title}</span>
+    <span class="text-xs" style="color:var(--t3)">Strategic condition mapped to ${PLC_NAMES[d.plc]} stage for ${d.n}</span>
+  </div>`+nba.cards.map((c,i)=>{
+    const gc=PLC_COLORS[d.plc];
+    return`<div class="nba"><div class="glow" style="background:${gc}"></div>
+      <div class="flex items-center gap-2 mb-3"><span class="text-xs font-bold" style="color:${gc}">NBA-${d.plc===1?'0'+(i+1):d.plc*3-2+i}</span><h4 class="text-sm font-bold">${c.title}</h4></div>
+      <p class="text-xs mb-4" style="color:var(--t2);line-height:1.6">${c.evidence(d)}</p>
+      <div class="space-y-2 mb-4">${c.actions.map(a=>`<div class="flex gap-2 items-start"><i class="fas fa-chevron-right text-xs mt-0.5" style="color:${gc}"></i><span class="text-xs" style="color:var(--t2);line-height:1.5">${a}</span></div>`).join('')}</div>
+      <div class="pt-3" style="border-top:1px solid var(--bdr)"><div class="flex items-center gap-2"><i class="fas fa-bullseye text-xs" style="color:${gc}"></i><span class="text-xs font-semibold" style="color:${gc}">${c.impact}</span></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ===== COMPARISON TABLE =====
+function renderCompTable(){
+  const tbl=document.getElementById('compTbl');
+  const sorted=[...D].sort((a,b)=>b.v[4]-a.v[4]);
+  tbl.innerHTML=`<thead><tr>
+    <th>#</th><th>Brand</th><th>Company</th><th>Therapy Area</th><th>PLC Stage</th>
+    <th class="text-right">Mar 26 (Cr)</th><th class="text-right">CAGR %</th><th class="text-right">YoY Val %</th>
+    <th class="text-right">YoY Vol %</th><th class="text-right">Price/Unit</th><th class="text-right">V-V Gap</th>
+    <th>NBA Strategy</th>
+  </tr></thead><tbody>${sorted.map((d,i)=>`<tr class="${d.id===selId?'sel':''}" style="cursor:pointer" onclick="selectBrand('${d.id}')">
+    <td style="color:var(--t3)">${i+1}</td>
+    <td class="font-semibold" style="color:var(--t1)">${d.n}</td>
+    <td>${d.co}</td><td>${d.ta}</td>
+    <td><span class="badge ${PLC_BADGE[d.plc]}">${PLC_NAMES[d.plc]}</span></td>
+    <td class="text-right font-semibold">${d.v[4].toFixed(1)}</td>
+    <td class="text-right" style="color:${(d.cagr||0)>=0?'var(--teal)':'var(--rose)'}">${d.cagr!==null?fmtSign(d.cagr):'—'}</td>
+    <td class="text-right" style="color:${(d.yoyV[3]||0)>=0?'var(--teal)':'var(--rose)'}">${d.yoyV[3]!==null?fmtSign(d.yoyV[3]):'—'}</td>
+    <td class="text-right" style="color:${(d.yoyU[3]||0)>=0?'var(--teal)':'var(--rose)'}">${d.yoyU[3]!==null?fmtSign(d.yoyU[3]):'—'}</td>
+    <td class="text-right">₹${fmt(d.p,0)}</td>
+    <td class="text-right" style="color:${d.vvGap>=0?'var(--acc)':'var(--rose)'}">${fmtSign(d.vvGap)}</td>
+    <td><span class="sbad ${PLC_SBAD[d.plc]}">${PLC_NBA[d.plc]}</span></td>
+  </tr>`).join('')}</tbody>`;
+}
+
+function selectBrand(id){
+  selId=id;
+  // Ensure brand button exists (may need to reset filter)
+  const exists=D.find(d=>d.id===id);
+  if(exists&&filterPlc&&exists.plc!==filterPlc){filterPlc=0;document.querySelectorAll('#plcFilter .fbtn').forEach((b,i)=>b.classList.toggle('on',i===0));}
+  buildBrandBtns();
+  updateAll();
+  // Scroll to top
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ===== UPDATE ALL =====
+function updateAll(){
+  const d=D.find(x=>x.id===selId);if(!d)return;
+  renderKPIs(d);
+  updateTrendChart(d);
+  renderPLC(d);
+  updateYoYChart(d);
+  updatePriceChart(d);
+  renderNBA(d);
+  renderCompTable();
+  updateRadar(d);
+}
+
+// ===== CHART VIEW TOGGLE =====
+document.querySelectorAll('[data-v]').forEach(b=>{
+  b.onclick=()=>{chartView=b.dataset.v;document.querySelectorAll('[data-v]').forEach(x=>x.classList.remove('on'));b.classList.add('on');updateTrendChart(D.find(x=>x.id===selId));};
+});
+
+// ===== EXPORT BUTTON =====
+document.getElementById('expBtn').onclick=()=>{
+  // Scroll to comparison table
+  document.getElementById('compTbl').scrollIntoView({behavior:'smooth',block:'start'});
+  toast('Scrolled to full comparison table');
+};
+
+// ===== INTERSECTION OBSERVER =====
+const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v');});},{threshold:0.1});
+document.querySelectorAll('.fade').forEach(el=>obs.observe(el));
+
+// ===== INIT =====
+buildFilters();
+buildBrandBtns();
+updateAll();
+
+// Reobserve after dynamic content
+setTimeout(()=>{document.querySelectorAll('.fade:not(.v)').forEach(el=>obs.observe(el));},100);
+</script>
+</body>
+</html>
